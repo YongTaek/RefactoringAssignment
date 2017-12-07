@@ -3,45 +3,31 @@ import java.util.Date;
 // Principle: SRP
 // Smell: Large class
 // Smell: Divergent change
-public class Video {
+public abstract class Video {
 	private String title ;
 
-	// Replace type code with class
-	private int priceCode ;
-	public static final int REGULAR = 1 ;
-	public static final int NEW_RELEASE =2 ;
+	// Replace type code with class Done
+	private PriceCode priceCode ;
 	
-	private int videoType ;
-	// Replace type code with subclass
-	public static final int VHS = 1 ;
-	public static final int CD = 2 ;
-	public static final int DVD = 3 ;
+	// Replace type code with subclass Done
 	
 	// Extract class
 	private Date registeredDate ;
 	private boolean rented ;
 	// long param
-	public Video(String title, int videoType, int priceCode, Date registeredDate) {
+	public Video(String title, PriceCode priceCode, Date registeredDate) {
 		this.setTitle(title) ;
-		this.setVideoType(videoType) ;
 		this.setPriceCode(priceCode) ;
 		this.registeredDate = registeredDate ;
 	}
 
-	public int getLateReturnPointPenalty() { 
-		int pentalty = 0 ;
-		switch ( videoType ) {
-			case VHS: pentalty = 1 ; break ;
-			case CD: pentalty = 2 ; break ;
-			case DVD: pentalty = 3 ; break ;
-		}
-		return pentalty ;
-	}
-	public int getPriceCode() {
+	public abstract int getLateReturnPointPenalty();
+
+	public PriceCode getPriceCode() {
 		return priceCode;
 	}
 
-	public void setPriceCode(int priceCode) {
+	public void setPriceCode(PriceCode priceCode) {
 		this.priceCode = priceCode;
 	}
 
@@ -69,32 +55,15 @@ public class Video {
 		this.registeredDate = registeredDate;
 	}
 
-	public int getVideoType() {
-		return videoType;
-	}
-
-	public void setVideoType(int videoType) {
-		this.videoType = videoType;
-	}
-
 	// Smell: Feature envy
-    // Move method to Video
+    // Move method to Video?
     public int getDaysRentedLimit(Rental rental) {
         int limit = 0;
         int daysRented = new DaysRentedComputation(rental).invoke();
         if (daysRented <= 2) return limit;
 
-        switch (getVideoType()) {
-            case VHS:
-                limit = 5;
-                break;
-            case CD:
-                limit = 3;
-                break;
-            case DVD:
-                limit = 2;
-                break;
-        }
-        return limit;
+        return getLimit();
     }
+
+    public abstract int getLimit();
 }
