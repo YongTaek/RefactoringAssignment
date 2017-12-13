@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -8,11 +7,11 @@ public class VRUI {
 
 	// Separate domain from presentation
 	
-	// Replace data value with object: CustomerManager
-	private List<Customer> customers = new ArrayList<Customer>() ;
-	
-	// Replace data value with object: VideoManager
-	private List<Video> videos = new ArrayList<Video>() ;
+	// Replace data value with object: CustomerManager Done
+	private CustomerManager customerManager = new CustomerManager();
+
+	// Replace data value with object: VideoManager Done
+	private VideoManager videoManager = new VideoManager();
 	
 	public static void main(String[] args) {
 		VRUI ui = new VRUI() ;
@@ -25,8 +24,8 @@ public class VRUI {
 				case 0: quit = true ; break ;
 				case 1: ui.listCustomers() ; break ;
 				case 2: ui.listVideos() ; break ;
-				case 3: ui.register("customer") ; break ;
-				case 4: ui.register("video") ; break ;
+				case 3: ui.registerCustomer() ; break ;
+				case 4: ui.registerVideo(); ; break ;
 				case 5: ui.rentVideo() ; break ;
 				case 6: ui.returnVideo() ; break ;
 				case 7: ui.getCustomerReport() ; break; 
@@ -42,74 +41,60 @@ public class VRUI {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		// Extract method(findCustomer), Move method to CustomerManager
-		Customer foundCustomer = null ;
-		for ( Customer customer: customers ) {
-			if ( customer.getName().equals(customerName)) {
-				foundCustomer = customer ;
-				break ;
-			}
-		}
+		// Extract method(findCustomer), Move method to CustomerManager Done
+		Customer foundCustomer = customerManager.findCustomer(customerName);
 
 		if ( foundCustomer == null ) {
 			System.out.println("No customer found") ;
 		}
 		else {
 			// Principle: SRP
-			// Separate query from modifier
-			
+			// Separate query from modifier Done
 			// query
-			System.out.println("Name: " + foundCustomer.getName() +
-					"\tRentals: " + foundCustomer.getRentals().size()) ;
-			for ( Rental rental: foundCustomer.getRentals() ) {
-				// Hide delegate: create getVideoTitle() in Rental
-				//***** Client가 객체 위임  Class를 직접 호출 --> 서버에 Method를 만들어 대리객체(delegate)를 숨김
-				System.out.print("\tTitle: " + rental.getVideo().getTitle() + " ") ;
-				// Hide delegate: create getVideoPriceCode() in Rental
-				System.out.print("\tPrice Code: " + rental.getVideo().getPriceCode()) ;
-			}
+			foundCustomer.printCurrentRental();
 			// modifier
-			List<Rental> rentals = new ArrayList<Rental>() ;
-			foundCustomer.setRentals(rentals);
+			foundCustomer.clearRental();
 		}
 	}
+
 
 	public void returnVideo() {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		Customer foundCustomer = null ;
-		for ( Customer customer: customers ) {
-			if ( customer.getName().equals(customerName)) {
-				foundCustomer = customer ;
-				break ;
-			}
-		}
+		Customer foundCustomer = customerManager.findCustomer(customerName);
 		if ( foundCustomer == null ) return ;
 		
 		System.out.println("Enter video title to return: ") ;
 		String videoTitle = scanner.next() ;
-			
+
+		returnVideo(foundCustomer, videoTitle);
+	}
+
+	//TODO: Check
+	private void returnVideo(Customer foundCustomer, String videoTitle) {
 		List<Rental> customerRentals = foundCustomer.getRentals() ;
 		for ( Rental rental: customerRentals ) {
-			// Introduce explaining variable
-			if ( rental.getVideo().getTitle().equals(videoTitle) && rental.getVideo().isRented() ) {
+			// Introduce explaining variable Done
+			boolean isVideoMatched = rental.getVideo().getTitle().equals(videoTitle);
+			boolean isVideoRented = rental.getVideo().isRented();
+			if ( isVideoMatched && isVideoRented ) {
 				rental.returnVideo();
 				rental.getVideo().setRented(false);
 				break ;
 			}
-		}		
+		}
 	}
 
 	private void init() {
 		Customer james = new Customer("James") ;
 		Customer brown = new Customer("Brown") ;
-		customers.add(james) ;
-		customers.add(brown) ;
-		Video v1 = new CDVideo("v1", PriceCode.REGULAR, new Date()) ;
-		Video v2 = new DVDVideo("v2", PriceCode.NEW_RELEASE, new Date()) ;
-		videos.add(v1) ;
-		videos.add(v2) ;
+		customerManager.addCustomer(james) ;
+		customerManager.addCustomer(brown) ;
+		Video v1 = new CDVideo("v1", PriceCode.REGULAR) ;
+		Video v2 = new DVDVideo("v2", PriceCode.NEW_RELEASE) ;
+		videoManager.addVideo(v1) ;
+		videoManager.addVideo(v2) ;
 		
 		Rental r1 = new Rental(v1) ;
 		Rental r2 = new Rental(v2) ;
@@ -121,7 +106,7 @@ public class VRUI {
 	public void listVideos() {
 		System.out.println("List of videos");
 		
-		for ( Video video: videos ) {
+		for ( Video video: videoManager.getVideos() ) {
 			System.out.println("Price code: " + video.getPriceCode() +"\tTitle: " + video.getTitle()) ;
 		}
 		System.out.println("End of list");
@@ -130,20 +115,8 @@ public class VRUI {
 	public void listCustomers() {
 		System.out.println("List of customers");
 		
-		// Extract method(getCustomerList), Move method to CustomerManager
-		for ( Customer customer: customers ) {
-			
-			// Extract method(getCustomerSummary) in CustomerManager
-			System.out.println("Name: " + customer.getName() +
-					"\tRentals: " + customer.getRentals().size()) ;
-			for ( Rental rental: customer.getRentals() ) {
-				// Hide delegate: create getVideoTitle() in Rental
-				System.out.print("\tTitle: " + rental.getVideo().getTitle() + " ") ;
-				// Hide delegate: create getVideoPriceCode() in Rental
-				System.out.print("\tPrice Code: " + rental.getVideo().getPriceCode()) ;
-
-			}
-		}
+		// Extract method(getCustomerList), Move method to CustomerManager Done
+		customerManager.getCustomerList();
 		System.out.println("End of list");
 	}
 
@@ -151,14 +124,8 @@ public class VRUI {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		// Extract method(findCustomer), Move method to CustomerManager
-		Customer foundCustomer = null ;
-		for ( Customer customer: customers ) {
-			if ( customer.getName().equals(customerName)) {
-				foundCustomer = customer ;
-				break ;
-			}
-		}
+		// Extract method(findCustomer), Move method to CustomerManager Done
+		Customer foundCustomer = customerManager.findCustomer(customerName);
 
 		if ( foundCustomer == null ) {
 			System.out.println("No customer found") ;
@@ -172,69 +139,52 @@ public class VRUI {
 	public void rentVideo() {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
-		
-		// Extract method, Move method to CustomerManager
-		Customer foundCustomer = null ;
-		for ( Customer customer: customers ) {
-			if ( customer.getName().equals(customerName)) {
-				foundCustomer = customer ;
-				break ;
-			}
-		}
+
+		// Extract method, Move method to CustomerManager Done
+		Customer foundCustomer = customerManager.findCustomer(customerName);
 		if ( foundCustomer == null ) return ;
 		
 		System.out.println("Enter video title to rent: ") ;
 		String videoTitle = scanner.next() ;
 
-		// Extract method, Move method to VideoManager
-		Video foundVideo = null ;
-		for ( Video video: videos ) {
-			// Introduce explaining variable
-			if ( video.getTitle().equals(videoTitle) && video.isRented() == false ) {
-				foundVideo = video ;
-				break ;
-			}
-		}
+		// Extract method, Move method to VideoManager Done
+		Video foundVideo = videoManager.findVideo(videoTitle);
 		if ( foundVideo == null ) return ;
 		
 		Rental rental = new Rental(foundVideo) ;
 		foundVideo.setRented(true);
 		
 		// Smell: Inappropriate intimacy
-		// Encapsulate collection
-		List<Rental> customerRentals = foundCustomer.getRentals() ;
-		customerRentals.add(rental);
-		foundCustomer.setRentals(customerRentals);		
+		// Encapsulate collection Done
+		foundCustomer.addRental(rental);
 	}
 
-	// Replace parameter with explicit methods
-	public void register(String object) {
-		if ( object.equals("customer") ) {
-			System.out.println("Enter customer name: ") ;
-			String name = scanner.next();
-			
-			// Factory Method Pattern
-			// Extract method(addCustomer(name)), Move method to CustomerManager
-			Customer customer = new Customer(name) ;
-			customers.add(customer) ;
-		}
-		else {
-			System.out.println("Enter video title to register: ") ;
-			String title = scanner.next() ;
-			
-			System.out.println("Enter video type( 1 for VHD, 2 for CD, 3 for DVD ):") ;
-			int videoType = scanner.nextInt();
-			
-			System.out.println("Enter price code( 1 for Regular, 2 for New Release ):") ;
-			int priceCode = scanner.nextInt();
-		
-			// Factory Method Pattern
-			// Replace parameter(registereddDate) with method
-			// Extract method(addVideo(title, priceCode)), Move method to VideoManager
-			Date registeredDate = new Date();
-			Video video = new Video(title, videoType, priceCode, registeredDate) ;
-			videos.add(video) ;
-		}
+	// Replace parameter with explicit methods Done
+	private void registerVideo() {
+		System.out.println("Enter video title to register: ") ;
+		String title = scanner.next() ;
+
+		System.out.println("Enter video type( 1 for VHD, 2 for CD, 3 for DVD ):") ;
+		int videoType = scanner.nextInt();
+
+		System.out.println("Enter price code( 1 for Regular, 2 for New Release ):") ;
+		int priceCode = scanner.nextInt();
+
+		// Factory Method Pattern
+		// Replace parameter(registereddDate) with method
+		// Extract method(addVideo(title, priceCode)), Move method to VideoManager
+		Date registeredDate = new Date();
+		Video video = new Video(title, videoType, priceCode);
+		videoManager.addVideo(video);
+	}
+
+	private void registerCustomer() {
+		System.out.println("Enter customer name: ") ;
+		String name = scanner.next();
+
+		// Factory Method Pattern
+		// Extract method(addCustomer(name)), Move method to CustomerManager Done
+		customerManager.addCustomer(name);
 	}
 
 	public int showCommand() {

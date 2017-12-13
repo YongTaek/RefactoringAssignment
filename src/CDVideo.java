@@ -1,8 +1,8 @@
 import java.util.Date;
 
 public class CDVideo extends Video{
-    public CDVideo(String title, PriceCode priceCode, Date registeredDate) {
-        super(title, priceCode, registeredDate);
+    public CDVideo(String title, PriceCode priceCode) {
+        super(title, priceCode);
     }
 
     @Override

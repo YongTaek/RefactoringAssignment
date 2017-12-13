@@ -4,21 +4,20 @@ import java.util.Date;
 // Smell: Large class
 // Smell: Divergent change
 public abstract class Video {
+	private RegisteredDate registeredDate;
 	private String title ;
 
 	// Replace type code with class Done
 	private PriceCode priceCode ;
 	
 	// Replace type code with subclass Done
-	
-	// Extract class
-	private Date registeredDate ;
+
 	private boolean rented ;
 	// long param
-	public Video(String title, PriceCode priceCode, Date registeredDate) {
+	public Video(String title, PriceCode priceCode) {
 		this.setTitle(title) ;
 		this.setPriceCode(priceCode) ;
-		this.registeredDate = registeredDate ;
+		this.registeredDate = new RegisteredDate(new Date());
 	}
 
 	public abstract int getLateReturnPointPenalty();
@@ -48,11 +47,11 @@ public abstract class Video {
 	}
 
 	public Date getRegisteredDate() {
-		return registeredDate;
+		return registeredDate.getRegisteredDate();
 	}
 
 	public void setRegisteredDate(Date registeredDate) {
-		this.registeredDate = registeredDate;
+		this.registeredDate.setRegisteredDate(registeredDate);
 	}
 
 	// Smell: Feature envy

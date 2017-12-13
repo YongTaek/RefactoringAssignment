@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Customer {
@@ -19,7 +20,7 @@ public class Customer {
 	}
 
 	public List<Rental> getRentals() {
-		return rentals;
+		return Collections.unmodifiableList(rentals);
 	}
 
 	public void setRentals(List<Rental> rentals) {
@@ -43,4 +44,32 @@ public class Customer {
 	}
 
 
+	void getCusomerSummary() {
+		System.out.println("Name: " + getName() +
+                "\tRentals: " + getRentals().size()) ;
+		for ( Rental rental: getRentals() ) {
+            // Hide delegate: create getVideoTitle() in Rental
+            System.out.print("\tTitle: " + rental.getVideoTitle() + " ") ;
+            // Hide delegate: create getVideoPriceCode() in Rental
+            System.out.print("\tPrice Code: " + rental.getVideoPriceCode()) ;
+
+        }
+	}
+
+	void printCurrentRental() {
+		System.out.println("Name: " + getName() +
+                "\tRentals: " + getRentals().size()) ;
+		for ( Rental rental: getRentals() ) {
+            // Hide delegate: create getVideoTitle() in Rental Done
+            //***** Client가 객체 위임  Class를 직접 호출 --> 서버에 Method를 만들어 대리객체(delegate)를 숨김
+            System.out.print("\tTitle: " + rental.getVideoTitle() + " ") ;
+            // Hide delegate: create getVideoPriceCode() in Rental Done
+            System.out.print("\tPrice Code: " + rental.getVideoPriceCode()) ;
+        }
+	}
+
+	void clearRental() {
+		List<Rental> rentals = new ArrayList<Rental>() ;
+		setRentals(rentals);
+	}
 }

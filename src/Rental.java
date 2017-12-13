@@ -75,4 +75,11 @@ public class Rental {
         return eachPoint;
     }
 
+    public String getVideoTitle() {
+        return video.getTitle();
+    }
+
+    public PriceCode getVideoPriceCode() {
+        return video.getPriceCode();
+    }
 }

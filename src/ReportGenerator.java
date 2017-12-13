@@ -1,20 +1,13 @@
 import java.util.List;
 
-public class CustomerReportGenerator {
-
-    private final Customer customer;
-
-    public CustomerReportGenerator(Customer customer) {
-        this.customer = customer;
-    }
+public abstract class ReportGenerator {
 
     public String invoke() {
-        // Move accumulation to collecting parameter Done
-        StringBuffer result = new StringBuffer();
+        // Move accumulation to collecting parameter
         // Template Method Pattern
 
         // Extract method(getHeader) in CustomerReportGenerator Done
-        getHeader(result);
+        String result = getHeader();
 
         List<Rental> rentals = customer.getRentals();
 
@@ -48,7 +41,7 @@ public class CustomerReportGenerator {
             eachPoint = each.getPointPenalty(eachPoint, daysRented);
 
             // Extract method(getReportForCustomer) in CustomerReportGenerator Done
-            getReportForCustomer(result, each, eachCharge, eachPoint, daysRented);
+            result = getReportForCustomer(result, each, eachCharge, eachPoint, daysRented);
 
             // Extract method for accumulation(getTotalCharge) Done
             totalCharge = getTotalCharge(totalCharge, eachCharge);
@@ -56,7 +49,7 @@ public class CustomerReportGenerator {
             totalPoint = getTotalPoint(totalPoint, eachPoint);
         }
         // Extract method
-        getResultForChargeAndPoint(result, totalCharge, totalPoint);
+        result = getResultForChargeAndPoint(result, totalCharge, totalPoint);
 
         if ( totalPoint >= 10 ) {
             System.out.println("Congrat! You earned one free coupon");
@@ -64,29 +57,16 @@ public class CustomerReportGenerator {
         if ( totalPoint >= 30 ) {
             System.out.println("Congrat! You earned two free coupon");
         }
-        return result.toString();
+        return result ;
     }
 
-    private void getResultForChargeAndPoint(StringBuffer result, double totalCharge, int totalPoint) {
-        result.append("Total charge: " + totalCharge + "\tTotal Point:" + totalPoint + "\n");
-    }
+    protected abstract String getResultForChargeAndPoint(String result, double totalCharge, int totalPoint);
 
-    private int getTotalPoint(int totalPoint, int eachPoint) {
-        totalPoint += eachPoint ;
-        return totalPoint;
-    }
+    protected abstract int getTotalPoint(int totalPoint, int eachPoint);
 
-    private double getTotalCharge(double totalCharge, double eachCharge) {
-        totalCharge += eachCharge;
-        return totalCharge;
-    }
+    protected abstract double getTotalCharge(double totalCharge, double eachCharge);
 
-    private void getReportForCustomer(StringBuffer result, Rental each, double eachCharge, int eachPoint, int daysRented) {
-        result.append("\t" + each.getVideo().getTitle() + "\tDays rented: " + daysRented + "\tCharge: " + eachCharge
-                + "\tPoint: " + eachPoint + "\n");
-    }
+    protected abstract String getReportForCustomer(String result, Rental each, double eachCharge, int eachPoint, int daysRented);
 
-    private void getHeader(StringBuffer result) {
-        result.append("Customer Report for " + customer.getName() + "\n");
-    }
+    protected abstract String getHeader();
 }

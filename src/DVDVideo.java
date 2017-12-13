@@ -1,8 +1,8 @@
 import java.util.Date;
 
 public class DVDVideo extends Video{
-    public DVDVideo(String title, PriceCode priceCode, Date registeredDate) {
-        super(title, priceCode, registeredDate);
+    public DVDVideo(String title, PriceCode priceCode) {
+        super(title, priceCode);
     }
 
     @Override
