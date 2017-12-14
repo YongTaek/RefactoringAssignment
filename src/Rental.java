@@ -15,6 +15,10 @@ public class Rental {
         this.video = video;
         status = 0;
         rentDate = new Date();
+        if (video.getPriceCode() == PriceCode.NEW_RELEASE)
+            pricesStrategy = new NewReleaseRentalPricesStrategy();
+        else
+            pricesStrategy = new RegularRentalPricesStrategy();
     }
 
     public RentalPricesStrategy getPricesStrategy() {
@@ -63,7 +67,8 @@ public class Rental {
     public int getPoint() {
         int eachPoint = 1;
         // Introduce explaining Variable(isNewRelease) maybe Done
-        boolean isNewRelease = getVideo().getPriceCode() == PriceCode.NEW_RELEASE;
+        eachPoint += pricesStrategy.getPoint();
+        boolean isNewRelease = getVideo().getPriceCode() == PriceCode.NEW_RELEASE; //???
         if (isNewRelease)
             eachPoint++;
         return eachPoint;

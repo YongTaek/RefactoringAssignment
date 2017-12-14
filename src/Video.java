@@ -14,9 +14,13 @@ public abstract class Video {
 
 	private boolean rented ;
 	// long param
-	public Video(String title, PriceCode priceCode) {
+	public Video(String title, int priceCode) {
 		this.setTitle(title) ;
-		this.setPriceCode(priceCode) ;
+		if (priceCode == 1) {
+			this.priceCode = PriceCode.REGULAR;
+		} else if (priceCode == 2) {
+			this.priceCode = PriceCode.NEW_RELEASE;
+		}
 		this.registeredDate = new RegisteredDate(new Date());
 	}
 

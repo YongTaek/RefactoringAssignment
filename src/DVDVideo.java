@@ -1,7 +1,5 @@
-import java.util.Date;
-
 public class DVDVideo extends Video{
-    public DVDVideo(String title, PriceCode priceCode) {
+    public DVDVideo(String title, int priceCode) {
         super(title, priceCode);
     }
 

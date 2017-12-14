@@ -1,7 +1,5 @@
-import java.util.Date;
-
 public class CDVideo extends Video{
-    public CDVideo(String title, PriceCode priceCode) {
+    public CDVideo(String title, int priceCode) {
         super(title, priceCode);
     }
 

@@ -6,6 +6,6 @@ public class NewReleaseRentalPricesStrategy implements RentalPricesStrategy {
 
     @Override
     public int getPoint() {
-        return 0;
+        return 1;
     }
 }

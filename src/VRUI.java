@@ -1,5 +1,6 @@
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class VRUI {
@@ -12,29 +13,37 @@ public class VRUI {
 
 	// Replace data value with object: VideoManager Done
 	private VideoManager videoManager = new VideoManager();
+
+	private static Map<Integer, Command> handler = new HashMap<Integer, Command>();
 	
 	public static void main(String[] args) {
 		VRUI ui = new VRUI() ;
-		
+		makeHandler(ui);
 		boolean quit = false ;
 		while ( ! quit ) {
 			// Replace conditional dispatcher with Command Pattern
 			int command = ui.showCommand() ;
-			switch ( command ) {
-				case 0: quit = true ; break ;
-				case 1: ui.listCustomers() ; break ;
-				case 2: ui.listVideos() ; break ;
-				case 3: ui.registerCustomer() ; break ;
-				case 4: ui.registerVideo(); ; break ;
-				case 5: ui.rentVideo() ; break ;
-				case 6: ui.returnVideo() ; break ;
-				case 7: ui.getCustomerReport() ; break; 
-				case 8: ui.clearRentals() ; break ;
-				case -1: ui.init() ; break ;
-				default: break ;
-			}
+			Command handler = lookUpHandler(command);
+			quit = handler.execute();
 		}
 		System.out.println("Bye");
+	}
+
+	public static void makeHandler(VRUI vrui) {
+		handler.put(0, new ProgramEndCommand(vrui));
+		handler.put(1, new ListCustomersCommand(vrui));
+		handler.put(2, new ListVideoCommand(vrui));
+		handler.put(3, new RegisterCustomerCommand(vrui));
+		handler.put(4, new RegisterVideoCommand(vrui));
+		handler.put(5, new RentVideoCommand(vrui));
+		handler.put(6, new ReturnVideoCommand(vrui));
+		handler.put(7, new CustomerReportCommand(vrui));
+		handler.put(8, new ClearRentalCommand(vrui));
+		handler.put(-1, new InitCommand(vrui));
+	}
+
+	public static Command lookUpHandler(int command) {
+		return handler.get(command);
 	}
 
 	public void clearRentals() {
@@ -86,13 +95,13 @@ public class VRUI {
 		}
 	}
 
-	private void init() {
+	public void init() {
 		Customer james = new Customer("James") ;
 		Customer brown = new Customer("Brown") ;
 		customerManager.addCustomer(james) ;
 		customerManager.addCustomer(brown) ;
-		Video v1 = new CDVideo("v1", PriceCode.REGULAR) ;
-		Video v2 = new DVDVideo("v2", PriceCode.NEW_RELEASE) ;
+		Video v1 = new CDVideo("v1", 1) ;
+		Video v2 = new DVDVideo("v2", 2) ;
 		videoManager.addVideo(v1) ;
 		videoManager.addVideo(v2) ;
 		
@@ -160,7 +169,7 @@ public class VRUI {
 	}
 
 	// Replace parameter with explicit methods Done
-	private void registerVideo() {
+	public void registerVideo() {
 		System.out.println("Enter video title to register: ") ;
 		String title = scanner.next() ;
 
@@ -170,15 +179,13 @@ public class VRUI {
 		System.out.println("Enter price code( 1 for Regular, 2 for New Release ):") ;
 		int priceCode = scanner.nextInt();
 
-		// Factory Method Pattern
-		// Replace parameter(registereddDate) with method
+		// Factory Method Pattern maybe Done?
+		// Replace parameter(registereddDate) with method Done
 		// Extract method(addVideo(title, priceCode)), Move method to VideoManager
-		Date registeredDate = new Date();
-		Video video = new Video(title, videoType, priceCode);
-		videoManager.addVideo(video);
+		videoManager.addVideo(title, videoType, priceCode);
 	}
 
-	private void registerCustomer() {
+	public void registerCustomer() {
 		System.out.println("Enter customer name: ") ;
 		String name = scanner.next();
 

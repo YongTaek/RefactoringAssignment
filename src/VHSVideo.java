@@ -1,7 +1,5 @@
-import java.util.Date;
-
 public class VHSVideo extends Video{
-    public VHSVideo(String title, PriceCode priceCode) {
+    public VHSVideo(String title, int priceCode) {
         super(title, priceCode);
     }
 

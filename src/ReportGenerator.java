@@ -2,12 +2,19 @@ import java.util.List;
 
 public abstract class ReportGenerator {
 
+    public final Customer customer;
+
+    public ReportGenerator(Customer customer) {
+        this.customer = customer;
+    }
+
     public String invoke() {
-        // Move accumulation to collecting parameter
+        // Move accumulation to collecting parameter Done
+        StringBuffer result = new StringBuffer();
         // Template Method Pattern
 
         // Extract method(getHeader) in CustomerReportGenerator Done
-        String result = getHeader();
+        getHeader(result);
 
         List<Rental> rentals = customer.getRentals();
 
@@ -32,8 +39,8 @@ public abstract class ReportGenerator {
             // Extract method(getCharge), Move method to RentalPricePriceStategy maybe Done
             eachCharge = each.getPricesStrategy().getCharge(daysRented);
 
-            // Extract method(getPoint), Move method to Rental, RentalPriceStrategy? //TODO: RentalPricesStrategy??
-            // Strategy Pattern? //TODO: how?
+            // Extract method(getPoint), Move method to Rental, RentalPriceStrategy //TODO: ??? how to move RentalPriceStrategy
+            // Strategy Pattern?
             eachPoint = each.getPoint();
 
             // Smell: Feature envy
@@ -41,15 +48,15 @@ public abstract class ReportGenerator {
             eachPoint = each.getPointPenalty(eachPoint, daysRented);
 
             // Extract method(getReportForCustomer) in CustomerReportGenerator Done
-            result = getReportForCustomer(result, each, eachCharge, eachPoint, daysRented);
+            getReportForCustomer(result, each, eachCharge, eachPoint, daysRented);
 
             // Extract method for accumulation(getTotalCharge) Done
             totalCharge = getTotalCharge(totalCharge, eachCharge);
             // Extract method for accumulation(getTotalPoint) Done
             totalPoint = getTotalPoint(totalPoint, eachPoint);
         }
-        // Extract method
-        result = getResultForChargeAndPoint(result, totalCharge, totalPoint);
+        // Extract method Done
+        getResultForChargeAndPoint(result, totalCharge, totalPoint);
 
         if ( totalPoint >= 10 ) {
             System.out.println("Congrat! You earned one free coupon");
@@ -57,16 +64,16 @@ public abstract class ReportGenerator {
         if ( totalPoint >= 30 ) {
             System.out.println("Congrat! You earned two free coupon");
         }
-        return result ;
+        return result.toString();
     }
 
-    protected abstract String getResultForChargeAndPoint(String result, double totalCharge, int totalPoint);
+    protected abstract void getResultForChargeAndPoint(StringBuffer result, double totalCharge, int totalPoint);
 
     protected abstract int getTotalPoint(int totalPoint, int eachPoint);
 
     protected abstract double getTotalCharge(double totalCharge, double eachCharge);
 
-    protected abstract String getReportForCustomer(String result, Rental each, double eachCharge, int eachPoint, int daysRented);
+    protected abstract void getReportForCustomer(StringBuffer result, Rental each, double eachCharge, int eachPoint, int daysRented);
 
-    protected abstract String getHeader();
+    protected abstract void getHeader(StringBuffer result);
 }

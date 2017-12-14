@@ -33,6 +33,7 @@ public class CustomerManager {
     }
 
     public void addCustomer(String name) {
-        customers.add(new Customer(name));
+        CustomerFactory customerFactory = new CustomerFactory();
+        customers.add(customerFactory.createCustomer(name));
     }
 }

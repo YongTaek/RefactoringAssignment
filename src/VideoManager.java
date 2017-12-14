@@ -26,4 +26,18 @@ public class VideoManager {
         }
         return foundVideo;
     }
+
+    public void addVideo(String title, int videoType, int priceCode) {
+        Video v = null;
+        if (videoType == 1) {
+            v  = new VHSFactory().createVideo(title, priceCode);
+        } else if (videoType == 2) {
+            v  = new CDFactory().createVideo(title, priceCode);
+        } else if (videoType == 3) {
+            v  = new DVDFactory().createVideo(title, priceCode);
+        } else {
+            return;
+        }
+        addVideo(v);
+    }
 }
