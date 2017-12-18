@@ -21,7 +21,7 @@ public class VRUI {
 		makeHandler(ui);
 		boolean quit = false ;
 		while ( ! quit ) {
-			// Replace conditional dispatcher with Command Pattern
+			// Replace conditional dispatcher with Command Pattern Done
 			int command = ui.showCommand() ;
 			Command handler = lookUpHandler(command);
 			quit = handler.execute();
@@ -181,7 +181,7 @@ public class VRUI {
 
 		// Factory Method Pattern maybe Done?
 		// Replace parameter(registereddDate) with method Done
-		// Extract method(addVideo(title, priceCode)), Move method to VideoManager
+		// Extract method(addVideo(title, priceCode)), Move method to VideoManager maybe Done
 		videoManager.addVideo(title, videoType, priceCode);
 	}
 

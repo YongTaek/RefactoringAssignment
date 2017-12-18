@@ -59,7 +59,7 @@ public abstract class Video {
 	}
 
 	// Smell: Feature envy
-    // Move method to Video?
+    // Move method to Video Done
     public int getDaysRentedLimit(Rental rental) {
         int limit = 0;
         int daysRented = new DaysRentedComputation(rental).invoke();

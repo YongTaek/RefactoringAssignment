@@ -66,11 +66,11 @@ public class Rental {
 
     public int getPoint() {
         int eachPoint = 1;
-        // Introduce explaining Variable(isNewRelease) maybe Done
         eachPoint += pricesStrategy.getPoint();
-        boolean isNewRelease = getVideo().getPriceCode() == PriceCode.NEW_RELEASE; //???
-        if (isNewRelease)
-            eachPoint++;
+        // Introduce explaining Variable(isNewRelease) maybe Done
+//        boolean isNewRelease = getVideo().getPriceCode() == PriceCode.NEW_RELEASE; //???
+//        if (isNewRelease)
+//            eachPoint++;
         return eachPoint;
     }
 

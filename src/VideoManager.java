@@ -16,7 +16,7 @@ public class VideoManager {
     Video findVideo(String videoTitle) {
         Video foundVideo = null ;
         for ( Video video: getVideos() ) {
-            // Introduce explaining variable
+            // Introduce explaining variable Done
             boolean isVideoFound = video.getTitle().equals(videoTitle);
             boolean isVideoRented = video.isRented() == false;
             if ( isVideoFound && isVideoRented) {
